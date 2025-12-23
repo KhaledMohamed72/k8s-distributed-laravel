@@ -39,7 +39,7 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - name: nginx-configkj
+            - name: nginx-config
               mountPath: /etc/nginx/conf.d
           startupProbe:
             httpGet:

@@ -11,7 +11,7 @@ spec:
     path: overlays/prod
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: laravel
   syncPolicy:
     automated: # Automatically sync the application with the Git repository.
       prune: true # Automatically delete resources that are no longer defined in Git.

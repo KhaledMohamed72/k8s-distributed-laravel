@@ -4,17 +4,7 @@ kind: Kustomization
 # ✅ This includes PVC, deployments, jobs, etc.
 resources:
   - ../../base
-
-# ✅ This overrides the sealed secret with a plain .env secret
-secretGenerator:
-  - files:
-      - ../../base/secrets/.env
-    name: laravel-secrets
-    type: Opaque
-
+  
 generatorOptions:
   disableNameSuffixHash: true
 
-patches:
-  - path: patch-laravel-replicas.yaml
-  - path: patch-laravel-pvc.yaml

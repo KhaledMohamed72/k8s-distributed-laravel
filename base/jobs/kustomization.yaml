@@ -1,5 +1,0 @@
-resources:
-  - migrate-job.yaml
-  - queue-worker.yaml
-  - scheduler.yaml
-  - supervisor-config.yaml 

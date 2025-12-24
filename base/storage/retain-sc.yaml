@@ -4,4 +4,3 @@ metadata:
   name: retain-sc
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
-reclaimPolicy: Retain

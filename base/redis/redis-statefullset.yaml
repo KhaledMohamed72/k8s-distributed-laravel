@@ -30,12 +30,7 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-  volumeClaimTemplates:
-  - metadata:
-      name: redis-storage
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
-      storageClassName: retain-sc
+      volumes:
+      - name: redis-storage
+        persistentVolumeClaim:
+          claimName: redis-pvc

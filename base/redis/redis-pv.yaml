@@ -7,7 +7,7 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  storageClassName: retain-sc
+  storageClassName: standard
   persistentVolumeReclaimPolicy: Retain
   hostPath:
     path: /tmp/redis/data

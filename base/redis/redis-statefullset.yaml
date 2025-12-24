@@ -2,9 +2,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: redis
-  namespace: default
 spec:
-  serviceName: redis
+  serviceName: redis-service
   replicas: 1
   selector:
     matchLabels:

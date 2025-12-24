@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: PersistentVolumeClaim #a Kubernetes object that requests disk storage from your cluster.
-metadata:
-  name: laravel-storage-pvc
-  
-spec:
-  resources:
-    requests:
-      storage: 1Gi #the laravel-storage-pvc should present in base and we overwrite one thing only 

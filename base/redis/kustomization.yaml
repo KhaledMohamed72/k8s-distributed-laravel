@@ -1,7 +1,6 @@
 resources:
 - redis-statefullset.yaml
 - redis-service.yaml
-- redis-pvc.yaml
 - redis-pv.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

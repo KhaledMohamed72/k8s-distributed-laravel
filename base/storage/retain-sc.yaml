@@ -3,5 +3,5 @@ kind: StorageClass
 metadata:
   name: retain-sc
 provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
-reclaimPolicy: Retain
+volumeBindingMode: Immediate
+allowVolumeExpansion: false

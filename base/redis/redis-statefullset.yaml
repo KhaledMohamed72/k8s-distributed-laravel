@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: redis
+  annotations:
+    argocd.argoproj.io/sync-options: Replace=true
 spec:
   serviceName: redis-service
   replicas: 1

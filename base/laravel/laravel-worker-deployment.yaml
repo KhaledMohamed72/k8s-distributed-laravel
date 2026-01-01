@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel-worker
+  labels:
+    app: laravel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: laravel
+  template:
+    metadata:
+      labels:
+        app: laravel
+    spec:
+      volumes: #This part is declaring the available volumes for the whole pod (not container-specific):
+          - name: nginx-config
+            configMap: #this will load the nginx configuration from a ConfigMap file
+              name: laravel-nginx-config
+      containers:
+        - name: laravel-worker
+          image: laravel-app-local-img:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9000
+          workingDir: /var/www
+          command:
+          - "php"
+          - "/var/www/artisan"
+          - "queue:work"
+          - "redis"
+          - "--queue=default"
+          - "--sleep=3"
+          - "--tries=3"
+          - "--verbose"
+
+          envFrom:
+            - secretRef:
+                name: laravel-secret-env
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"

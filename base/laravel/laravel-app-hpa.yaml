@@ -1,0 +1,39 @@
+# HorizontalPodAutoscaler for Laravel app deployment
+# Automatically scales pods based on CPU and memory utilization
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: laravel-app-hpa  # Name of the HPA resource
+spec:
+  scaleTargetRef:  # Reference to the target workload to scale
+    apiVersion: apps/v1
+    kind: Deployment
+    name: laravel-app  # Name of the deployment to scale
+  minReplicas: 2  # Minimum number of replicas
+  maxReplicas: 10  # Maximum number of replicas
+  metrics:  # Metrics to monitor for scaling decisions
+  - type: Resource
+    resource:
+      name: cpu  # Scale based on CPU usage
+      target:
+        type: Utilization  # Target type as percentage of requested resources
+        averageUtilization: 70  # Scale up when average CPU utilization exceeds 70%
+  - type: Resource
+    resource:
+      name: memory  # Scale based on memory usage
+      target:
+        type: Utilization
+        averageUtilization: 80  # Scale up when average memory utilization exceeds 80%
+  behavior:  # Custom scaling behavior to control scale up/down rates
+    scaleDown:  # Rules for scaling down
+      stabilizationWindowSeconds: 300  # Wait 5 minutes before scaling down to avoid thrashing
+      policies:
+      - type: Percent  # Scale down by percentage
+        value: 10  # Reduce replicas by 10% at a time
+        periodSeconds: 60  # Check every 60 seconds
+    scaleUp:  # Rules for scaling up
+      stabilizationWindowSeconds: 60  # Wait 1 minute before scaling up
+      policies:
+      - type: Percent  # Scale up by percentage
+        value: 50  # Increase replicas by 50% at a time
+        periodSeconds: 60  # Check every 60 seconds

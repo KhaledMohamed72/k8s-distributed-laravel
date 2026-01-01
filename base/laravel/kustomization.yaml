@@ -1,0 +1,10 @@
+resources:
+- laravel-deployment.yaml
+- laravel-service.yaml
+- nginx-configmap.yaml
+- laravel-secret-env.yaml
+- laravel-worker-deployment.yaml
+- laravel-app-hpa.yaml
+- laravel-worker-hpa.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization

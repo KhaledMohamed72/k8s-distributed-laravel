@@ -1,0 +1,49 @@
+name: Update Image Reference
+
+on:
+  repository_dispatch:
+    types: [laravel-docker-updated]
+
+jobs:
+  update-image:
+    name: Update Image in Manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract image details
+        id: extract
+        run: |
+          IMAGE="${{ github.event.client_payload.image }}"
+          echo "image=${IMAGE}" >> $GITHUB_OUTPUT
+          echo "📦 Received image: ${IMAGE}"
+
+      - name: Update image in laravel deployment
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq eval -i '.spec.template.spec.containers[0].image = "${{ steps.extract.outputs.image }}"' base/laravel/laravel-deployment.yaml
+
+      - name: Update image in laravel worker deployment
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq eval -i '.spec.template.spec.containers[0].image = "${{ steps.extract.outputs.image }}"' base/laravel/laravel-worker-deployment.yaml
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git add .
+          git commit -m "Update Laravel image to ${{ steps.extract.outputs.image }}" || echo "No changes to commit"
+          git push
+
+      - name: Summary
+        run: |
+          echo "## Image Update Summary 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **New Image**: \`${{ steps.extract.outputs.image }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Updated Files**: laravel-deployment.yaml, laravel-worker-deployment.yaml" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ ArgoCD will sync the updated manifests to the cluster" >> $GITHUB_STEP_SUMMARY

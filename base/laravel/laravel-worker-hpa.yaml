@@ -1,0 +1,39 @@
+# HorizontalPodAutoscaler for Laravel worker deployment
+# Scales worker pods based on CPU and memory to handle queue processing load
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: laravel-worker-hpa  # Name of the HPA resource
+spec:
+  scaleTargetRef:  # Reference to the target workload to scale
+    apiVersion: apps/v1
+    kind: Deployment
+    name: laravel-worker  # Name of the worker deployment to scale
+  minReplicas: 1  # Minimum number of worker replicas
+  maxReplicas: 5  # Maximum number of worker replicas
+  metrics:  # Metrics to monitor for scaling decisions
+  - type: Resource
+    resource:
+      name: cpu  # Scale based on CPU usage
+      target:
+        type: Utilization  # Target type as percentage of requested resources
+        averageUtilization: 60  # Scale up when average CPU utilization exceeds 60%
+  - type: Resource
+    resource:
+      name: memory  # Scale based on memory usage
+      target:
+        type: Utilization
+        averageUtilization: 70  # Scale up when average memory utilization exceeds 70%
+  behavior:  # Custom scaling behavior to control scale up/down rates
+    scaleDown:  # Rules for scaling down
+      stabilizationWindowSeconds: 600  # Wait 10 minutes before scaling down workers
+      policies:
+      - type: Percent  # Scale down by percentage
+        value: 20  # Reduce replicas by 20% at a time
+        periodSeconds: 60  # Check every 60 seconds
+    scaleUp:  # Rules for scaling up
+      stabilizationWindowSeconds: 120  # Wait 2 minutes before scaling up
+      policies:
+      - type: Percent  # Scale up by percentage
+        value: 100  # Double replicas when needed
+        periodSeconds: 60  # Check every 60 seconds
